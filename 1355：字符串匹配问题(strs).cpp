@@ -1,69 +1,70 @@
 #include<iostream>
 #include<cstdio>
+#include<cstdlib>
+#include<string>
 #include<cstring>
 #include<cmath>
+#include<ctime>
 #include<algorithm>
-#include<string>
-#include<cstdlib>
+#include<utility>
+#include<stack>
 #include<queue>
 #include<vector>
-#define INF 0x3f3f3f3f
+#include<set>
+#include<map>
 #define PI acos(-1.0)
-#define N 100010
-#define MOD 2520
-#define E 1e-12
+#define E 1e-9
+#define INF 0x3f3f3f3f
+#define N 300
 using namespace std;
-int top=0;
+int b[N];
+char a[N];
+char c[]={'{','[','(','<','}',']',')','>'};
+stack<int> s;
+
+using namespace std;
 int main()
 {
-	char queue[N],a[256];
-	int t;
-	cin>>t;	
-	getchar();
-	while(t--)
+	int n;
+	cin>>n;
+	while(n--)
 	{
-		top=0;
-		gets(a);
-		for(int i=0;i<strlen(a);i++)
+		while(!s.empty()) s.pop();
+		bool flag=1;
+		cin>>a;
+		int len=strlen(a);
+		for(int i=0;i<len;i++)
+		 for(int j=0;j<8;j++)
+		  if(a[i]==c[j])
+		  {
+		  	b[i]=j;
+		  	break;
+		  }
+		
+		for(int i=0;i<len;i++)
 		{
-			if(a[i]=='['||a[i]=='('||a[i]=='<'||a[i]=='{'){top++;queue[top]=a[i];}
-			if(a[i]==')'&&queue[top]=='('&&a[i-2]==']') top--;
-			else{
-				if(a[i]==')')
+			if(b[i]<=3)
+			{
+				if(!s.empty()&&b[i]<s.top())
 				{
-					top++;
-					queue[top]=a[i];
+					flag=false;
+					break;
 				}
+				else s.push(b[i]);
 			}
-			if(a[i]==']'&&queue[top]=='['&&a[i-2]=='}') top--;
-			else{
-				if(a[i]==']')
+			else if(b[i]>=4)
+			{
+				if(s.empty()||(s.top()+4)!=b[i])
 				{
-					top++;
-					queue[top]=a[i];
+					flag=false;
+					break;
 				}
-			}
-			if(a[i]=='>'&&queue[top]=='<'&&a[i-2]==')') top--;
-			else{
-				if(a[i]=='>')
-				{
-					top++;
-					queue[top]=a[i];
-				}
-			}
-			if(a[i]=='}'&&queue[top]=='{') top--;
-			else{
-				if(a[i]=='}')
-				{
-					top++;
-					queue[top]=a[i];
-				}
-			}
+				else s.pop();
+			}	
 		}
-	printf("%d ",top);
-	if(top==0) printf("OK\n");
-	else printf("Wrong\n");
+		if(!s.empty()) printf("NO\n");
+		else if(flag) printf("YES\n");
+		else printf("NO\n");
 	}
-	
 	return 0;
 }
